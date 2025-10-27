@@ -1,0 +1,41 @@
+def countDistinctColorings(domino):
+    MOD = 10**9 + 7
+    n = len(domino[0])
+    
+    # Helper function to check if two characters can be colored differently
+    def can_color_diff(c1, c2):
+        return c1.lower() != c2.lower()
+    
+    # Helper function to count valid colorings for each domino
+    def count_colorings(d1, d2):
+        if n == 0:
+            return 1
+        
+        dp = [[0 for _ in range(6)] for _ in range(n)]
+        colors = ['R', 'G', 'B']
+        
+        # Initialize base cases
+        for i in range(3):
+            dp[0][i] = 1
+        
+        for i in range(1, n):
+            for j in range(3):
+                for k in range(3):
+                    if can_color_diff(d1[i], d1[i-1]) and can_color_diff(d2[i], d2[i-1]) and colors[j] != colors[k]:
+                        dp[i][j*3+k] = (dp[i][j*3+k] + dp[i-1][k*3+j]) % MOD
+        
+        return sum(dp[n-1]) % MOD
+    
+    result = count_colorings(domino[0], domino[1])
+    return result
+
+if __name__ == '__main__':
+    fptr = open(os.environ['OUTPUT_PATH'], 'w')
+    domino_count = int(input().strip())
+    domino = []
+    for _ in range(domino_count):
+        domino_item = input()
+        domino.append(domino_item)
+    result = countDistinctColorings(domino)
+    fptr.write(str(result) + '\n')
+    fptr.close()
